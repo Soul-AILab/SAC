@@ -37,8 +37,8 @@ The following table lists the available SAC checkpoints:
 
 | Model Name | Hugging Face | Sample Rate | Token Rate | BPS |
 |:-----------:|:------------:|:------------:|:-----------:|:---:|
-| SAC | [🤗 Soul/SAC-16k-37.5hz](https://huggingface.co/Soul/SAC-16k-37.5hz) | 16 kHz | 37.5 Hz | 525 |
-| SAC | [🤗 Soul/SAC-16k-62.5hz](https://huggingface.co/Soul/SAC-16k-62.5hz) | 16 kHz | 62.5 Hz | 875 |
+| SAC | [🤗 Soul-AILab/SAC-16k-37_5Hz](https://huggingface.co/Soul-AILab/SAC-16k-37_5Hz) | 16 kHz | 37.5 Hz | 525 |
+| SAC | [🤗 Soul-AILab/SAC-16k-62_5Hz](https://huggingface.co/Soul-AILab/SAC-16k-62_5Hz) | 16 kHz | 62.5 Hz | 875 |
 
 
 ## 🎧 Inference
