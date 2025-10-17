@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+
+# Local & dev
+dev/
+local/
+.vscode/
+my_utils/
+my_script/
+llm_infer/
+
+# Logs & results
+logs/
+results/
+*.log
+wandb/
+
+# Checkpoints & models
+*.pt
+*.ckpt
+pretrained_models/
+
+# Config runs
+configs/runs/
+
+# Temporary files
+*.err
+*.out

@@ -1,0 +1,202 @@
+#===========================|  Basic Configuration  |===========================#
+# wav setting
+sample_rate: 16000
+volume_normalize: True
+# mel setting
+n_fft: 1024
+win_length: 640
+hop_length: 320
+mel_fmin: 10 
+mel_fmax: null
+num_mels: 128
+latent_hop_length: 1280
+highpass_cutoff_freq: 40
+offline_feature_extracted: True
+align_multiple: 1
+ssl_per_sem_ratio: 4
+
+#===========================|  Dataset Configuration |==========================#
+segment_duration: 2.4   # (s)
+max_val_duration: 12
+datasets:
+  train: 
+    - /path/to/your/train_dataset1.jsonl
+    - /path/to/your/train_dataset2.jsonl
+  val: 
+    - /path/to/your/val_dataset.jsonl
+
+#===========================|  Dataloader Configuration |=======================#
+dataloader:
+  _target_: models.codec.sac.dataloader.SSLWAVDataset
+  cycle: 1
+  list_shuffle: True
+  partition: True
+  batch_type: static     # choices = ['static', 'bucket', 'dynamic']
+  prefetch: 1000
+  static:
+    batch_size: 24
+
+#===========================|  Training Configuration |=========================#
+trainer:
+  _target_: models.codec.sac.trainer.CodecTrainer
+
+current_step: 0
+current_epoch: 0
+grad_clip: 5
+
+log_interval: 20  # 20
+val_interval: 500 # 1000
+syn_interval: 2000 # 10000
+save_interval: 2000  # 10000
+keep_interval: 25000
+tmp_save_time: 1200          # s
+empty_cache_interval: 100
+total_step: 1000000 # 1000000
+max_epoch: 500
+max_val_utts: 50
+generator_warmup_steps: 1500
+
+# EMA Configuration
+ema_update: True
+
+#===========================|  Model Configuration |============================#
+model:
+  generator:
+    _target_: models.codec.sac.model.SAC
+    checkpoint: null
+    no_grad: False
+    optim: adamw
+    optim_conf:
+      lr: 0.0001
+      betas: [0.8, 0.9]
+    scheduler: exponentiallr
+    scheduler_conf:
+      gamma: 0.999996
+      min_lr: 1e-6
+
+    semantic_encoder: 
+      _target_: models.codec.sac.modules.semantic_encoder.WhisperVQEncoder
+      config:
+        _target_: models.codec.sac.third_party.hf_whisper.configuration_whisper.WhisperVQConfig
+      from_pretrained:
+        hf_repo: "THUDM/glm-4-voice-tokenizer"
+        local_ckpt: "/path/to/glm-4-voice-tokenizer"
+        freeze: True
+        load_codebook_only: True
+
+    semantic_adapter:
+      _target_: models.codec.sac.modules.decoder.Decoder_with_upsample
+      input_channels: 1280  # 1280 for Whisper feature
+      vocos_dim: 384    # bottleneck dimension
+      vocos_intermediate_dim: 2048
+      vocos_num_layers: 12
+      out_channels: 1024
+      sample_ratios: [1,2]
+      use_tanh_at_final: False
+
+    acoustic_encoder:
+      _target_: models.codec.sac.modules.acoustic_encoder.AcousticEncoder
+      encoder_dim: 64
+      encoder_rates: [2, 2, 4, 5, 8]  # 640x downsample
+      latent_dim: 1024
+
+    acoustic_quantizer:
+      _target_: models.codec.base.quantizer.factorized_vector_quantize.FactorizedVectorQuantize
+      input_dim: 1024
+      codebook_size: 16384
+      codebook_dim: 8
+      commitment: 0.25
+      codebook_loss_weight: 4.0
+      use_l2_normlize: True
+      threshold_ema_dead_code: 2
+      forced_activation: True
+
+    speaker_predictor:
+      _target_: models.codec.sac.modules.speaker_predictor.SpeakerPredictor
+      input_dim: 1024
+      output_dim: 192
+      hidden_dim: 1024
+      dropout: 0.1
+      use_mean_std: True
+    
+    speaker_encoder:
+      _target_: models.codec.sac.modules.speaker_encoder.SpeakerEmbedder
+      pretrained_dir: "/path/to/speech_eres2net_sv_en_voxceleb_16k"
+      freeze: True
+
+    prenet:
+      _target_: models.codec.sac.modules.decoder.Decoder_with_upsample
+      input_channels: 2048  # 1024 (acoustic) + 1024 (semantic) = 2048
+      vocos_dim: 768
+      vocos_intermediate_dim: 2048
+      vocos_num_layers: 12
+      out_channels: 1024
+      sample_ratios: [1,2]
+      use_tanh_at_final: False
+      # condition_dim: 1024
+
+    semantic_decoder: 
+      _target_: models.codec.sac.modules.decoder.Decoder_with_upsample
+      input_channels: 1024
+      vocos_dim: 384    # bottleneck dimension
+      vocos_intermediate_dim: 2048
+      vocos_num_layers: 6
+      out_channels: 1280  # 1280 for Whisper feature
+      use_tanh_at_final: False
+
+    acoustic_decoder: 
+      _target_: models.codec.sac.modules.vocoder.wave_generator.Decoder
+      input_channel: 1024
+      channels: 1536
+      rates: [8, 5, 4, 2]
+      kernel_sizes: [16,11,8,4]
+    
+    loss_config:
+      sample_rate: 16000
+      
+      mel_loss:
+        n_mels: [5, 10, 20, 40, 80, 160, 320]
+        window_lengths: [32, 64, 128, 256, 512, 1024, 2048]
+        mel_fmin: [0, 0, 0, 0, 0, 0, 0]
+        mel_fmax: [null, null, null, null, null, null, null]
+        pow: 1.0
+        clamp_eps: 1.0e-5
+        mag_weight: 0.0
+        log_weight: 1.0
+        weight: 1.0
+        match_stride: False
+        window_type: None
+
+      loss_weights:
+        mse_loss: 1000.0
+        vq_loss: 1
+        mel_loss: 15.0
+        sim_mse_loss: 10.0
+        # ssim_loss: 1
+        # speaker_loss: 1
+
+  discriminator: 
+    _target_: models.codec.sac.model.WavDiscriminator
+    checkpoint: null
+    no_grad: False
+    optim: adamw
+    optim_conf:
+      lr: 0.0001
+      betas: [0.8, 0.9]
+    scheduler: exponentiallr
+    scheduler_conf:
+      gamma: 0.999996
+      min_lr: 1e-6
+
+    loss_config:
+      sample_rate: 16000
+      loss_weights:
+        adv_gen_loss: 1.0
+        adv_feat_loss: 2.0
+    
+    discriminator:
+      _target_: models.codec.sac.modules.vocoder.wave_discriminator.Discriminator
+      sample_rate: 16000
+      periods: [2, 3, 5, 7, 11]
+      fft_sizes: [2048, 1024, 512]
+      bands: [[0.0, 0.1], [0.1, 0.25], [0.25, 0.5], [0.5, 0.75], [0.75, 1.0]]
