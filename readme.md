@@ -10,7 +10,7 @@
     <a href="https://arxiv.org/abs/2510.00000">
       <img src="https://img.shields.io/badge/arXiv-2510.00000-blueviolet?logo=arxiv&logoColor=white" alt="arXiv">
     </a>
-    <a href="https://huggingface.co/Soul/SAC">
+    <a href="https://huggingface.co/collections/Soul-AILab/sac-68f1df9572a6314d1dc1f91e">
       <img src="https://img.shields.io/badge/🤗%20SAC-Models-yellow" alt="Hugging Face">
     </a>
   </p>
