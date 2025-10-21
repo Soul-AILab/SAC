@@ -7,7 +7,7 @@
     <a href="https://sac-codec.github.io/">
       <img src="https://img.shields.io/badge/🌐%20Demo-Page-brightgreen" alt="Demo Page">
     </a>
-    <a href="https://arxiv.org/abs/2510.00000">
+    <a href="https://arxiv.org/abs/2510.16841">
       <img src="https://img.shields.io/badge/arXiv-2510.00000-blueviolet?logo=arxiv&logoColor=white" alt="arXiv">
     </a>
     <a href="https://huggingface.co/collections/Soul-AILab/sac-68f1df9572a6314d1dc1f91e">
@@ -92,6 +92,15 @@ Our codebase builds upon the awesome [SparkVox](https://github.com/SparkAudio/Sp
 ## 🔖 Citation
 If you find this work useful in your research, please consider citing:
 ```bibtex
+@misc{chen2025sacneuralspeechcodec,
+      title={SAC: Neural Speech Codec with Semantic-Acoustic Dual-Stream Quantization}, 
+      author={Wenxi Chen and Xinsheng Wang and Ruiqi Yan and Yushen Chen and Zhikang Niu and Ziyang Ma and Xiquan Li and Yuzhe Liang and Hanlin Wen and Shunshun Yin and Ming Tao and Xie Chen},
+      year={2025},
+      eprint={2510.16841},
+      archivePrefix={arXiv},
+      primaryClass={eess.AS},
+      url={https://arxiv.org/abs/2510.16841}, 
+}
 ```
 
 ## 📜 License
