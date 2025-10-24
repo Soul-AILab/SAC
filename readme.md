@@ -92,14 +92,11 @@ Our codebase builds upon the awesome [SparkVox](https://github.com/SparkAudio/Sp
 ## 🔖 Citation
 If you find this work useful in your research, please consider citing:
 ```bibtex
-@misc{chen2025sacneuralspeechcodec,
-      title={SAC: Neural Speech Codec with Semantic-Acoustic Dual-Stream Quantization}, 
-      author={Wenxi Chen and Xinsheng Wang and Ruiqi Yan and Yushen Chen and Zhikang Niu and Ziyang Ma and Xiquan Li and Yuzhe Liang and Hanlin Wen and Shunshun Yin and Ming Tao and Xie Chen},
-      year={2025},
-      eprint={2510.16841},
-      archivePrefix={arXiv},
-      primaryClass={eess.AS},
-      url={https://arxiv.org/abs/2510.16841}, 
+@article{chen2025sac,
+  title={SAC: Neural Speech Codec with Semantic-Acoustic Dual-Stream Quantization},
+  author={Chen, Wenxi and Wang, Xinsheng and Yan, Ruiqi and Chen, Yushen and Niu, Zhikang and Ma, Ziyang and Li, Xiquan and Liang, Yuzhe and Wen, Hanlin and Yin, Shunshun and others},
+  journal={arXiv preprint arXiv:2510.16841},
+  year={2025}
 }
 ```
 
