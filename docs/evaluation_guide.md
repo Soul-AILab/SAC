@@ -7,7 +7,7 @@ This document describes how to evaluate reconstruction performance for SAC.
 
 To evaluate speaker similarity, you need to extract **speaker embeddings** from the reconstructed speech and the reference speech. We use the [WavLM-based](https://github.com/microsoft/UniSpeech/tree/main/downstreams/speaker_verification) model for speaker verification, please set up the environment as described in that repository (e.g., the "s3prl" package).
 
-For reference, we provide an embedding extraction script at [`tools/speaker/extract_spk_emb.py`](../../tools/speaker/extract_spk_emb.py).
+For reference, we provide an embedding extraction script at [`tools/speaker/extract_spk_emb.py`](../../main/tools/speaker/extract_spk_emb.py).
 
 
 ## 2. Evaluation Directory Structure
